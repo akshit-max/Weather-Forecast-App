@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Forecast APP</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=cloud" />
+    <style>
+        * {
+            padding: 0px;
+            margin: 0px;
+            box-sizing: border-box;
+        }
+
+        main {
+            background-color: #2980b9;
+            height: 100vh;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+
+        }
+
+        .box1 {
+            width: 50%;
+            height: 80vh;
+            border: 2px solid black;
+            background-color: #ecf0f1;
+            border: 2px solid black;
+            border-radius: 20px;
+
+        }
+
+        .heading {
+            font-size: xx-large;
+            font-weight: bolder;
+            color: #1abc9c;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        
+        .bottom{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .img{
+            display: flex;
+        }
+        .icon{
+            display: flex;
+            flex-direction: column;
+            margin: 15px;
+            padding: 46px 28px;
+            font-size: x-large;
+        }
+        .material-symbols-outlined{
+            scale: 3;
+            margin: 20px;
+        }
+        .search{
+            font-size: larger;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 40px;
+            
+        }
+        .input{font-size: x-large; height: 50px; width: 40%; border: 2px solid black; border-radius: 30px;
+          padding: 20px; }
+        
+    </style>
+    <script>
+      const API_KEY = "3265874a2c77ae4a04bb96236a642d2f";
+
+document.addEventListener("DOMContentLoaded", function () {
+    const form = document.querySelector("form");
+    const searchInput = document.querySelector(".input");
+    const tempElement = document.getElementById("temp");
+    const moodElement = document.getElementById("mood");
+    const bottomElement = document.getElementById("bottom");
+
+    async function getWeather(city) {
+        bottomElement.innerHTML = "<h2>Loading...</h2>";
+
+        try {
+            const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric`;
+            const response = await fetch(url);
+            const data = await response.json();
+
+            if (data.cod === "404") {
+                bottomElement.innerHTML = "<h2>City Not Found</h2>";
+                return;
+            }
+
+            // Update the UI with fetched weather data
+            tempElement.innerText = `${data.main.temp}°C`;
+            moodElement.innerText = data.weather[0].main;
+
+            bottomElement.innerHTML = `
+                <div class="image">
+                    <img src="https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png" alt="Weather Icon">
+                </div>
+                <div class="icon">
+                    <h1 id="temp">${data.main.temp}°C</h1>
+                    <h2 id="mood">${data.weather[0].main}</h2>
+                </div>
+            `;
+
+        } catch (error) {
+            bottomElement.innerHTML = "<h2>Error Fetching Data</h2>";
+            console.error("Error:", error);
+        }
+    }
+
+    form.addEventListener("submit", function (event) {
+        event.preventDefault();
+        const city = searchInput.value.trim();
+        if (city) {
+            getWeather(city);
+        }
+    });
+});
+
+
+        </script>
+</head>
+
+<body>
+    <main>
+        <div class="box1">
+            <div class="heading">
+                <H1>!!!WEATHER FORECAST !!!</H1>
+            </div>
+            <form action="">
+            <div class="search" id="search">
+                <input class="input"  type="search" placeholder="Search for your city">
+            </div>
+        </form>
+            <div class="bottom" id="bottom">
+
+                <div class="image">
+                    <span class="material-symbols-outlined">
+                        cloud
+                        </span>
+                    <!-- <img src="https://picsum.photos/id/237/200/300" alt=""> -->
+                </div>
+                <div class="icon">
+                    <h1 id="temp">23 deg</h1>
+                    <h2 id="mood">haze</h2>
+                </div>
+            </div>
+
+
+        </div>
+
+    </main>
+
+</body>
+
+</html>
